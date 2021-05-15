@@ -5,25 +5,35 @@ refs = {
   mins: document.querySelector('[data-value="mins"]'),
   secs: document.querySelector('[data-value="secs"]'),
 };
-
 console.log(refs.timer);
-const timer = {
-  start() {
-    const startTime = Date.now();
 
-    setInterval(() => {
+class CountdownTimer {
+  constructor({ selector, targetDate }) {
+    this.intervalId = null;
+    this.isActive = false;
+    this.selector = selector;
+    this.targetDate = targetDate;
+  }
+  start() {
+    if(this.isActive) {
+      return;
+    }
+    const startTime = Date.now();
+    this.isActive = true;
+    
+    this.intervalId = setInterval(() => {
       const currentTime = Date.now();
-      const deltaTime = currentTime - startTime;
-      const { days, hours, mins, secs } = getTimeComponents(deltaTime);
-      /* console.log('start -> startTime', currentTime); */
-      /*  console.log('ghjj') */
-      /* console.log(currentTime - startTime); */
-     /*  console.log(timeComponents); */
-      console.log(`${days}:${hours}:${mins}:${secs}`);
+      const deltaTime = this.targetDate - currentTime;
+      const time = getTimeComponents(deltaTime);
+      
+      this.selector(time);
     }, 1000);
-  },
+  }
+  stop() {
+    clearInterval(intervalId);
+    this.isActive = false;
+  }
 };
-timer.start();
 
 function getTimeComponents(time) {
   const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
@@ -33,9 +43,16 @@ function getTimeComponents(time) {
   return { days, hours, mins, secs };
 }
 function updateClockface({ days, hours, mins, secs }) {
-  refs.timer.textContent = `${days}:${hours}:${mins}:${secs}`;
+  refs.timer.textContent = `${days}days:${hours}hours:${mins}mins:${secs}secs`;
 }
 
 function pad(value) {
   return String(value).padStart(2, '0');
 }
+
+const timer = new CountdownTimer({
+  selector: updateClockface,
+  targetDate: new Date('Jul 17, 2021'),
+});
+
+ timer.start();
