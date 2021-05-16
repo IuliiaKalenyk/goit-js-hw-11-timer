@@ -1,0 +1,21 @@
+.value {
+  color: red;
+  font-size: 30px;
+}
+.label {
+  color: blue;
+  font-size: 15px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-right: 30px;
+}
+.field:last-child {
+  margin-right: 0;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+}
